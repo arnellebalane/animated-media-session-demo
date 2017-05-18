@@ -1,13 +1,4 @@
-const canvas = document.querySelector('canvas');
-const canvasCtx = canvas.getContext('2d');
-
 const audio = new Audio();
-const audioCtx = new AudioContext();
-const source = audioCtx.createMediaElementSource(audio);
-const analyser = audioCtx.createAnalyser();
-source.connect(analyser);
-analyser.connect(audioCtx.destination);
-
 const playlist = [{
     title: 'Tell Me If You Wanna Go Home',
     url: 'audios/tell-me-if-you-wanna-go-home.mp3',
@@ -33,7 +24,6 @@ const playlist = [{
     album: 'Begin Again',
     artwork: 'images/cover.jpg'
 }];
-
 let index = 0;
 
 audio.onended = next;
@@ -123,6 +113,15 @@ if ('mediaSession' in navigator) {
 
 
 // Audio visualization
+
+const canvas = document.querySelector('canvas');
+const canvasCtx = canvas.getContext('2d');
+
+const audioCtx = new AudioContext();
+const source = audioCtx.createMediaElementSource(audio);
+const analyser = audioCtx.createAnalyser();
+source.connect(analyser);
+analyser.connect(audioCtx.destination);
 
 const audioData = new Float32Array(analyser.frequencyBinCount);
 const stripsCount = 75;
