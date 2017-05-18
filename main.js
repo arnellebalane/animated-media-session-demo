@@ -81,6 +81,13 @@ function prev() {
     play(index);
 }
 
+function seek(time) {
+    let seekedTime = audio.currentTime + time;
+    seekedTime = Math.max(seekedTime, 0);
+    seekedTime = Math.min(seekedTime, audio.duration);
+    audio.currentTime = seekedTime;
+}
+
 function updateMediaSession() {
     if ('mediaSession' in navigator) {
         const metadata = Object.assign({}, playlist[index]);
@@ -92,4 +99,13 @@ function updateMediaSession() {
         delete metadata.cover;
         navigator.mediaSession.metadata = new MediaMetadata(metadata);
     }
+}
+
+if ('mediaSession' in navigator) {
+    const seekValue = 10;
+
+    navigator.mediaSession.setActionHandler('previoustrack', prev);
+    navigator.mediaSession.setActionHandler('nexttrack', next);
+    navigator.mediaSession.setActionHandler('seekbackward', () => seek(-seekValue));
+    navigator.mediaSession.setActionHandler('seekforward', () => seek(seekValue));
 }
