@@ -102,6 +102,19 @@ function updateMediaSession() {
     }
 }
 
+function updateMediaSessionArtwork() {
+    if ('mediaSession' in navigator) {
+        const metadata = Object.assign({}, playlist[index]);
+        metadata.artwork = [{
+            src: canvas.toDataURL(),
+            sizes: '128x128',
+            type: 'image/png'
+        }];
+        delete metadata.cover;
+        navigator.mediaSession.metadata = new MediaMetadata(metadata);
+    }
+}
+
 if ('mediaSession' in navigator) {
     const seekValue = 10;
 
@@ -147,4 +160,6 @@ const frameDuration = 1000 / 60;
         canvasCtx.lineTo(horizontalInterval * i + 2, verticalCenter + (200 * value));
         canvasCtx.stroke();
     }
+
+    updateMediaSessionArtwork();
 })();
