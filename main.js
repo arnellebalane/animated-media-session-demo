@@ -37,9 +37,9 @@ const playlist = [{
 }];
 
 let index = 0;
-audio.onended = next;
 
-document.onclick = () => play(0);
+audio.onended = next;
+document.onclick = toggle;
 
 function play(index) {
     if (index === undefined) {
@@ -57,7 +57,9 @@ function pause() {
 }
 
 function toggle() {
-    if (audio.paused) {
+    if (audio.paused && audio.currentTime === 0) {
+        play(index);
+    } else if (audio.paused && audio.currentTime > 0) {
         play();
     } else {
         pause();
