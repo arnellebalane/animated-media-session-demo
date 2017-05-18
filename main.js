@@ -13,25 +13,25 @@ const playlist = [{
     url: 'audios/tell-me-if-you-wanna-go-home.mp3',
     artist: 'Keira Knightley, Hailee Steinfeld',
     album: 'Begin Again',
-    cover: 'images/cover.jpg'
+    artwork: 'images/cover.jpg'
 }, {
     title: 'A Step You Can\'t Take Back',
     url: 'audios/a-step-you-cant-take-back.mp3',
     artist: 'Keira Knightley',
     album: 'Begin Again',
-    cover: 'images/cover.jpg'
+    artwork: 'images/cover.jpg'
 }, {
     title: 'Coming Up Roses',
     url: 'audios/coming-up-roses.mp3',
     artist: 'Keira Knightley',
     album: 'Begin Again',
-    cover: 'images/cover.jpg'
+    artwork: 'images/cover.jpg'
 }, {
     title: 'Lost Stars',
     url: 'audios/lost-stars.mp3',
     artist: 'Adam Levine',
     album: 'Begin Again',
-    cover: 'images/cover.jpg'
+    artwork: 'images/cover.jpg'
 }];
 
 let index = 0;
@@ -46,7 +46,7 @@ function play(index) {
         stop();
         audio.src = playlist[index].url;
         audio.play();
-        updateMediaSession();
+        updateMediaSession(playlist[index]);
     }
 }
 
@@ -89,15 +89,13 @@ function seek(time) {
 
 // Control media session metadata and action handlers
 
-function updateMediaSession() {
+function updateMediaSession(metadata) {
     if ('mediaSession' in navigator) {
-        const metadata = Object.assign({}, playlist[index]);
         metadata.artwork = [{
-            src: metadata.cover,
+            src: metadata.artwork,
             sizes: '128x128',
             type: 'image/png'
         }];
-        delete metadata.cover;
         navigator.mediaSession.metadata = new MediaMetadata(metadata);
     }
 }
