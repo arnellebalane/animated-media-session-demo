@@ -100,16 +100,15 @@ function updateMediaSession(metadata) {
     }
 }
 
-function updateMediaSessionArtwork() {
+function updateMediaSessionArtwork(artwork) {
     if ('mediaSession' in navigator) {
-        const metadata = Object.assign({}, playlist[index]);
-        metadata.artwork = [{
-            src: canvas.toDataURL(),
-            sizes: '128x128',
-            type: 'image/png'
-        }];
-        delete metadata.cover;
-        navigator.mediaSession.metadata = new MediaMetadata(metadata);
+        if (navigator.mediaSession.metadata) {
+            navigator.mediaSession.metadata.artwork = [{
+                src: artwork,
+                sizes: '128x128',
+                type: 'image/png'
+            }];
+        }
     }
 }
 
@@ -159,5 +158,5 @@ const frameDuration = 1000 / 60;
         canvasCtx.stroke();
     }
 
-    updateMediaSessionArtwork();
+    updateMediaSessionArtwork(canvas.toDataURL());
 })();
