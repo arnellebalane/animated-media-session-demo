@@ -1,7 +1,5 @@
 const canvas = document.querySelector('canvas');
 const canvasCtx = canvas.getContext('2d');
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
 
 const audio = new Audio();
 const audioCtx = new AudioContext();
@@ -88,6 +86,9 @@ function seek(time) {
     audio.currentTime = seekedTime;
 }
 
+
+// Control media session metadata and action handlers
+
 function updateMediaSession() {
     if ('mediaSession' in navigator) {
         const metadata = Object.assign({}, playlist[index]);
@@ -109,3 +110,41 @@ if ('mediaSession' in navigator) {
     navigator.mediaSession.setActionHandler('seekbackward', () => seek(-seekValue));
     navigator.mediaSession.setActionHandler('seekforward', () => seek(seekValue));
 }
+
+
+// Audio visualization
+
+const audioData = new Float32Array(analyser.frequencyBinCount);
+const stripsCount = 75;
+const indexInterval = Math.floor(audioData.length / stripsCount);
+const horizontalInterval = canvas.width / stripsCount;
+const verticalCenter = canvas.height / 2;
+
+canvasCtx.lineWidth = 3;
+canvasCtx.lineCap = 'round';
+canvasCtx.strokeStyle = '#e91e63';
+
+let previousTime = null;
+const frameDuration = 1000 / 60;
+
+(function visualize() {
+    requestAnimationFrame(visualize);
+
+    const currentTime = Date.now();
+    if (previousTime && currentTime - previousTime < frameDuration) {
+        return false;
+    }
+    previousTime = currentTime;
+
+    canvasCtx.clearRect(0, 0, canvas.width, canvas.height);
+    analyser.getFloatTimeDomainData(audioData);
+
+    for (let i = 0; i < stripsCount; i++) {
+        const value = audioData[indexInterval * i];
+
+        canvasCtx.beginPath();
+        canvasCtx.moveTo(horizontalInterval * i + 2, verticalCenter);
+        canvasCtx.lineTo(horizontalInterval * i + 2, verticalCenter + (200 * value));
+        canvasCtx.stroke();
+    }
+})();
